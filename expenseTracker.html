@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rbg(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        input[type="text"],
+        select,
+        input[type="number"],
+        input[type="submit"] {
+            margin-bottom: 10px;
+            width: 100%;
+            padding: 8px;
+            border: 1px solid white;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf5d;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid rgb(203, 199, 199);
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #44b458;
+            color: antiquewhite;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Expense Tracker</h2>
+        <form id="expenseform">
+            <input type="text" id="desc" placeholder="Expense description" required /><br>
+            <select id="catagory" required>
+                <option value="Select catagory">Select catagory</option>
+                <option value="Food">Food</option>
+                <option value="Stationary">Stationary</option>
+                <option value="Fees">Fees</option>
+                <option value="Transpost">Transpost</option>
+            </select><br>
+            <input type="number" id="amt" placeholder="Amount" required><br>
+            <input type="submit" value="Add Expense">
+        </form>
+        <h3>Expense Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody id="expenseList"></tbody>
+        </table>
+    </div>
+    <script>
+        const expenseForm = document.getElementById("expenseform");
+        const expenseList = document.getElementById("expenseList");
+
+        const totalRow = document.createElement('tr');
+        totalRow.innerHTML = `<td colspan="2">Total</td><td id="totalAmount">0</td>`;
+        expenseList.appendChild(totalRow);
+
+        expenseForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const desc = document.getElementById('desc').value;
+            const catagory = document.getElementById('catagory').value;
+            const amt = parseFloat(document.getElementById('amt').value);
+
+            if (desc && catagory && !isNaN(amt)) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `<td>${desc}</td><td>${catagory}</td><td>${amt}</td>`;
+
+                expenseList.insertBefore(newRow, totalRow);
+                updateTotal();
+
+                document.getElementById('desc').value = '';
+                document.getElementById('catagory').value = 'Select catagory';
+                document.getElementById('amt').value = '';
+            }
+            else alert('Fill all the details');
+        });
+        
+        function updateTotal() {
+            let total = 0;
+            const amountCells = document.querySelectorAll('#expenseList td:nth-child(3)');
+            amountCells.forEach(cell => {
+                total += parseFloat(cell.textContent);
+            });
+            document.getElementById('totalAmount').textContent = total.toFixed(2);
+        }
+    </script>
+
+</body>
+
+</html>
